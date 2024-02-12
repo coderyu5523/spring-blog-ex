@@ -1,5 +1,7 @@
 package com.example.springblog.user;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class Usercontroller {
 
     private final UserRepository userRepository ;
+    private final HttpSession session;
 
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO requestDTO){
@@ -17,7 +20,21 @@ public class Usercontroller {
 
         return "redirect:/loginForm";
     }
+    @PostMapping("/login")
+    public String login(UserRequest.LoginDTO requestDTO,HttpServletRequest request){
 
+       User user = userRepository.findByUsernameAndPassword(requestDTO);
+        if(user==null){
+            request.setAttribute("msg","로그인이 필요합니다");
+            request.setAttribute("status",400);
+            return "error/40x";
+        }else{
+            session.setAttribute("sessionUser",user);
+            return"redirect:/";
+        }
+
+
+    }
 
 
 
