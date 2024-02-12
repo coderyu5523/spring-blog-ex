@@ -66,7 +66,9 @@ public class Usercontroller {
     }
 
     @GetMapping("/logout")
-    public String logout() {return "redirect:/";}
+    public String logout() {
+        session.invalidate();
+        return "redirect:/";}
 
 }
 
