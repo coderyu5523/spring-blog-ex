@@ -1,6 +1,8 @@
 package com.example.springblog.board;
 
+import com.example.springblog.user.User;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import java.util.List;
 public class Boardcontroller {
 
     private final BoardRepository boardRepository;
+    private final HttpSession session;
 
     @GetMapping({ "/", "/board" })
     public String index(HttpServletRequest request, @RequestParam(defaultValue = "0") int page) {
@@ -53,9 +56,19 @@ public class Boardcontroller {
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id,HttpServletRequest request) {
         BoardResponse.DetailDTO responseDTO = boardRepository.findId(id);
+        boolean owner = false ;
+        int boardUserId = responseDTO.getUserId();
+
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser!=null){
+            if(boardUserId==sessionUser.getId()){
+                owner = true;
+            }
+            request.setAttribute("owner",owner);
+        }
         request.setAttribute("board",responseDTO);
-
-
         return "board/detail";
     }
-}
+    }
+
+
