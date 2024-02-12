@@ -2,6 +2,7 @@ package com.example.springblog.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,20 @@ public class Usercontroller {
     private final UserRepository userRepository ;
     private final HttpSession session;
 
+    @Transactional
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO requestDTO){
+    public String join(UserRequest.JoinDTO requestDTO,HttpServletRequest request){
 
-        userRepository.save(requestDTO);
+        User user = userRepository.findByUsername(requestDTO.getUsername());
+        if(user==null){
+            userRepository.save(requestDTO);
+        }else{
+            request.setAttribute("msg","아이디가 중복됩니다." +
+                    "");
+            request.setAttribute("status",400);
+            return "error/40x";
+        }
+
 
         return "redirect:/loginForm";
     }
