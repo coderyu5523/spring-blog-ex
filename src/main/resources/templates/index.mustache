@@ -1,6 +1,8 @@
 {{> layout/header}}
 <!--머스태치 문법/ 이렇게 적으면 헤더를 매번 포함할 수 있음-->
-    {{#boardList}}
+<div class="container p-5">
+
+{{#boardList}}
         <div class="card mb-3">
             <div class="card-body">
                 <h4 class="card-title mb-3">{{title}}</h4>
@@ -9,11 +11,10 @@
         </div>
     {{/boardList}}
 
-<div class="container p-5">
 
     <ul class="pagination d-flex justify-content-center">
-        <li class="page-item"><a class="page-link" href="?page={{prevPage}}">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{nextPage}}">Next</a></li>
+        <li class="page-item {{#first}}disabled{{/first}}"><a class="page-link" href="?page={{prevPage}}">Previous</a></li>
+        <li class="page-item {{#last}}disabled{{/last}}"><a class="page-link" href="?page={{nextPage}}">Next</a></li>
     </ul>
 
 </div>
