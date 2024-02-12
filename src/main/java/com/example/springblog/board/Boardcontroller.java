@@ -51,6 +51,11 @@ public class Boardcontroller {
 
     @GetMapping("/board/saveForm")
     public String saveForm() {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser==null){
+            return "redirect:/loginForm";
+        }
+
         return "board/saveForm";
     }
 
@@ -74,12 +79,32 @@ public class Boardcontroller {
     private String saveWrite(BoardRequest.saveDTO requestDTO){
         User sessionUser = (User) session.getAttribute("sessionUser");
 
+        if(sessionUser==null){
+            return "redirect:/loginForm";
+        }
+
         boardRepository.save(requestDTO,sessionUser.getId());
 
         return "redirect:/";
 
    }
+   @PostMapping("/board/{id}/delete")
+   public String delete(@PathVariable int id,HttpServletRequest request){
+       User sessionUser = (User) session.getAttribute("sessionUser");
+       if(sessionUser==null){
+           return "redirect:/loginForm";
+       }
+       Board board =boardRepository.findByIdCheck(id);
 
+       if(board.getUserId()!=sessionUser.getId()){
+           request.setAttribute("status",403);
+           request.setAttribute("msg","게시글을 삭제할 권한이 없습니다.");
+           return "error/40x";
+       }
+       boardRepository.deleteById(id);
+
+       return "redirect:/";
+   }
 
 }
 
