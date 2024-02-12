@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -69,6 +70,17 @@ public class Boardcontroller {
         request.setAttribute("board",responseDTO);
         return "board/detail";
     }
-    }
+    @PostMapping("/board/save")
+    private String saveWrite(BoardRequest.saveDTO requestDTO){
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        boardRepository.save(requestDTO,sessionUser.getId());
+
+        return "redirect:/";
+
+   }
+
+
+}
 
 
