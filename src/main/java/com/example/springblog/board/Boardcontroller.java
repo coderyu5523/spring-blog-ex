@@ -105,6 +105,24 @@ public class Boardcontroller {
 
        return "redirect:/";
    }
+   @GetMapping("/board/{id}/updateForm")
+   public String updateForm(@PathVariable int id,HttpServletRequest request){
+       User sessionUser = (User) session.getAttribute("sessionUser");
+       if(sessionUser==null){
+           return "redirect:/loginForm";
+       }
+       Board board = boardRepository.findByIdCheck(id);
+
+       if(board.getUserId()!=sessionUser.getId()){
+           request.setAttribute("status",403);
+           request.setAttribute("msg","게시글을 수정할 권한이 없습니다.");
+           return "error/40x";
+       }
+
+       request.setAttribute("board",board);
+
+        return "board/updateForm";
+   }
 
 }
 
