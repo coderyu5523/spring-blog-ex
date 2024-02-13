@@ -40,4 +40,19 @@ public class UserRepository {
         }
 
     }
+
+    public User findByUsernameAndEmail(int id) {
+        Query query = em.createNativeQuery("select username, email from user_tb where id=?",User.class);
+        query.setParameter(1,id);
+
+        try{
+            User user = (User) query.getSingleResult();
+            return user ;
+        }catch(Exception e){
+            return null;
+
+        }
+
+
+    }
 }

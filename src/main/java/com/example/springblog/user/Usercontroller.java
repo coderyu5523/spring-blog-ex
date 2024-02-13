@@ -48,8 +48,6 @@ public class Usercontroller {
     }
 
 
-
-
     @GetMapping("/joinForm")
     public String joinForm() {
         return "user/joinForm";
@@ -61,8 +59,18 @@ public class Usercontroller {
     }
 
     @GetMapping("/user/updateForm")
-    public String updateForm() {
-        return "user/updateForm";
+    public String updateForm(HttpServletRequest request) {
+
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if (sessionUser == null) {
+            return "redirect:/loginForm";
+        }
+
+        User user = userRepository.findByUsernameAndEmail(sessionUser.getId());
+
+        request.setAttribute("sessionUser",user);
+
+            return "user/updateForm";
     }
 
     @GetMapping("/logout")
