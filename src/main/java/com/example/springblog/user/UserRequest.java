@@ -15,4 +15,9 @@ public class UserRequest {
         private String password;
     }
 
+    @Data
+    public static class passwordUpdateDTO{
+        private String password ;
+    }
+
 }

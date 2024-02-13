@@ -73,6 +73,26 @@ public class Usercontroller {
             return "user/updateForm";
     }
 
+    @PostMapping("/user/update")
+    public String update(UserRequest.passwordUpdateDTO requstDTO,HttpServletRequest request){
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser==null){
+            return "redirect:/loginForm";
+        }
+        if(sessionUser.getPassword().equals(requstDTO.getPassword())){
+            request.setAttribute("msg","비밀번호가 동일합니다.");
+            request.setAttribute("status",400);
+
+            return "error/40x";
+        }
+
+        userRepository.passwordUpdate(requstDTO,sessionUser.getId());
+
+
+        return "redirect:/";
+    }
+
+
     @GetMapping("/logout")
     public String logout() {
         session.invalidate();
