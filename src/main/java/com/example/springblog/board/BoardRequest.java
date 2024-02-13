@@ -9,6 +9,12 @@ public class BoardRequest {
         private String title;
         private String content ;
     }
+    @Data
+    public static class updateDTO{
+        private String title ;
+        private String content ;
+    }
+
 }
 
 
