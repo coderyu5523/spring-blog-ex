@@ -1,5 +1,6 @@
 package com.example.springblog.board;
 
+import com.example.springblog.reply.ReplyRepository;
 import com.example.springblog.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -18,8 +19,9 @@ public class Boardcontroller {
 
     private final BoardRepository boardRepository;
     private final HttpSession session;
+    private final ReplyRepository replyRepository ;
 
-    @GetMapping({ "/", "/board" })
+    @GetMapping({ "/"})
     public String index(HttpServletRequest request, @RequestParam(defaultValue = "0") int page) {
 
         List<Board> boardList = boardRepository.findAll(page);
@@ -61,20 +63,24 @@ public class Boardcontroller {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id,HttpServletRequest request) {
-        BoardResponse.DetailDTO responseDTO = boardRepository.findId(id);
-        boolean owner = false ;
-        int boardUserId = responseDTO.getUserId();
 
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if(sessionUser!=null){
-            if(boardUserId==sessionUser.getId()){
-                owner = true;
-            }
-            request.setAttribute("owner",owner);
-        }
-        request.setAttribute("board",responseDTO);
+
+        //DB데이터를 DetailDTO에 받음
+        BoardResponse.DetailDTO boardDTO = boardRepository.findByIdWithUser(id);
+
+        //DB데이터를 ReplyDTO에 받음
+        List<BoardResponse.ReplyDTO> replyDTOList = replyRepository.findByBoardId(id,sessionUser);
+
+        request.setAttribute("board", boardDTO);
+        request.setAttribute("replyList",replyDTOList);
+
+
         return "board/detail";
+
     }
+
+
     @PostMapping("/board/save")
     private String saveWrite(BoardRequest.saveDTO requestDTO){
         User sessionUser = (User) session.getAttribute("sessionUser");

@@ -1,6 +1,7 @@
 package com.example.springblog.board;
 
 
+import com.example.springblog.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -17,6 +18,21 @@ public class BoardResponse {
         private Timestamp createdAt;
         private Integer userId ;
         private String username;
+
+    }
+
+    public static class ReplyDTO{
+        private Integer id ;
+        private Integer userId ;
+        private String username ;
+        private String comment;
+
+        public ReplyDTO(Object[] ob, User sessionUser){
+            this.id = (Integer) ob[0];
+            this.userId = (Integer) ob[1];
+            this.comment = (String) ob[2];
+            this.username = (String) ob[3];
+        }
 
     }
 

@@ -15,6 +15,7 @@ public class BoardRepository {
 
     private final EntityManager em ;
 
+    //게시글 페이징
     public List<Board> findAll(int page) {
         final int COUNT = 3;
         int value = page*COUNT ;
@@ -26,7 +27,7 @@ public class BoardRepository {
         return boardList;
     }
 
-    public BoardResponse.DetailDTO findId(int id) {
+    public BoardResponse.DetailDTO findByIdWithUser(int id) {
         Query query = em.createNativeQuery("select bt.id, bt.title, bt.content, bt.created_at, bt.user_id, ut.username from board_tb bt inner join user_tb ut on bt.user_id =ut.id where bt.id =?");
         query.setParameter(1,id);
 
