@@ -20,19 +20,28 @@ public class BoardResponse {
         private String username;
 
     }
-
+    @Data
     public static class ReplyDTO{
         private Integer id ;
         private Integer userId ;
         private String username ;
         private String comment;
+        private Boolean replyOwner ;
+
 
         public ReplyDTO(Object[] ob, User sessionUser){
             this.id = (Integer) ob[0];
             this.userId = (Integer) ob[1];
             this.comment = (String) ob[2];
             this.username = (String) ob[3];
+
+            if(sessionUser==null){
+                replyOwner = false;
+            }else {
+                replyOwner = (sessionUser.getId()==userId?true:false);
+            }
         }
+
 
     }
 
