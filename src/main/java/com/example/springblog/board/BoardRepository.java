@@ -27,12 +27,25 @@ public class BoardRepository {
         return boardList;
     }
 
-    public BoardResponse.DetailDTO findByIdWithUser(int id) {
-        Query query = em.createNativeQuery("select bt.id, bt.title, bt.content, bt.created_at, bt.user_id, ut.username from board_tb bt inner join user_tb ut on bt.user_id =ut.id where bt.id =?");
-        query.setParameter(1,id);
+    public BoardResponse.DetailDTO findByIdWithUser(int idx) {
+        Query query = em.createNativeQuery("select b.id, b.title, b.content,b.user_id, u.username from board_tb b inner join user_tb u on b.user_id = u.id where b.id = ?");
+        query.setParameter(1,idx);
 
-        JpaResultMapper rm = new JpaResultMapper();
-        BoardResponse.DetailDTO responseDTO = rm.uniqueResult(query,BoardResponse.DetailDTO.class);
+        Object[] row = (Object[]) query.getSingleResult();
+
+        Integer id = (Integer) row[0];
+        String title = (String) row[1];
+        String content = (String) row[2];
+        int userId = (Integer) row[3];
+        String username = (String) row[4];
+
+        BoardResponse.DetailDTO responseDTO = new BoardResponse.DetailDTO();
+        responseDTO.setId(id);
+        responseDTO.setTitle(title);
+        responseDTO.setContent(content);
+        responseDTO.setUserId(userId);
+        responseDTO.setUsername(username);
+
         return responseDTO;
     }
     @Transactional

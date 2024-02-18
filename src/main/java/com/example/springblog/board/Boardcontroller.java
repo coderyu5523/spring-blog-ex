@@ -69,6 +69,7 @@ public class Boardcontroller {
         //DB데이터를 DetailDTO에 받음
         BoardResponse.DetailDTO boardDTO = boardRepository.findByIdWithUser(id);
 
+        boardDTO.isBoardOwner(sessionUser);
         //DB데이터를 ReplyDTO에 받음
         List<BoardResponse.ReplyDTO> replyDTOList = replyRepository.findByBoardId(id,sessionUser);
 
