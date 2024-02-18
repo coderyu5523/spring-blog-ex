@@ -36,4 +36,21 @@ public class ReplyRepository {
         return obs.stream().map(ob -> new BoardResponse.ReplyDTO(ob,sessionUser)).toList();
 
     }
+
+    public Reply findById(int id) {
+        Query query = em.createNativeQuery("select * from reply_tb where id =?",Reply.class);
+        query.setParameter(1,id);
+
+        try {
+            return (Reply) query.getSingleResult();
+        }catch (Exception e){
+            return null ;
+        }
+    }
+    @Transactional
+    public void deleteById(int id) {
+        Query query = em.createNativeQuery("delete from reply_tb where id = ?");
+        query.setParameter(1,id);
+        query.executeUpdate();
+    }
 }

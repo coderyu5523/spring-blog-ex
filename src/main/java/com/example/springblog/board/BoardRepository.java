@@ -36,7 +36,7 @@ public class BoardRepository {
         Integer id = (Integer) row[0];
         String title = (String) row[1];
         String content = (String) row[2];
-        int userId = (Integer) row[3];
+        Integer userId = (Integer) row[3];
         String username = (String) row[4];
 
         BoardResponse.DetailDTO responseDTO = new BoardResponse.DetailDTO();
