@@ -27,7 +27,7 @@ public class ReplyController {
 
         replyRepository.save(requestDTO,sessionUser.getId());
 
-        return "/";
+        return "redirect:/board/"+requestDTO.getBoardId();
     }
     @PostMapping("/reply/{id}/delete")
     public String delete(@PathVariable int id,HttpServletRequest request){
