@@ -108,9 +108,7 @@ public class Boardcontroller {
        Board board =boardRepository.findByIdCheck(id);
 
        if(board.getUserId()!=sessionUser.getId()){
-           request.setAttribute("status",403);
-           request.setAttribute("msg","게시글을 삭제할 권한이 없습니다.");
-           return "error/40x";
+            throw new RuntimeException("권한이 없습니다.");
        }
        boardRepository.deleteById(id);
 
@@ -125,9 +123,7 @@ public class Boardcontroller {
        Board board = boardRepository.findByIdCheck(id);
 
        if(board.getUserId()!=sessionUser.getId()){
-           request.setAttribute("status",403);
-           request.setAttribute("msg","게시글을 수정할 권한이 없습니다.");
-           return "error/40x";
+           throw new RuntimeException("권한이 없습니다.");
        }
 
        request.setAttribute("board",board);
@@ -146,9 +142,7 @@ public class Boardcontroller {
 
         //2. 권한 체크
         if(board.getUserId()!=sessionUser.getId()){
-            request.setAttribute("status",403);
-            request.setAttribute("msg","게시글을 수정할 권한이 없습니다.");
-            return "error/40x";
+            throw new RuntimeException("권한이 없습니다.");
         }
 
         //3. 핵심 로직
