@@ -16,18 +16,13 @@ public class Usercontroller {
 
     @Transactional
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO requestDTO,HttpServletRequest request){
+    public String join(UserRequest.JoinDTO requestDTO){
 
-        User user = userRepository.findByUsername(requestDTO.getUsername());
-        if(user==null){
+        try{
             userRepository.save(requestDTO);
-        }else{
-            request.setAttribute("msg","아이디가 중복됩니다." +
-                    "");
-            request.setAttribute("status",400);
-            return "error/40x";
+        }catch (Exception e){
+            throw new RuntimeException("아이디가 중복되었어요");
         }
-
 
         return "redirect:/loginForm";
     }
