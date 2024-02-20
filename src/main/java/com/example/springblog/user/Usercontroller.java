@@ -23,6 +23,10 @@ public class Usercontroller {
         String encPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
         requestDTO.setPassword(encPassword);
 
+        if(requestDTO.getUsername().length()<3){
+            throw new RuntimeException("아이디는 3자리 이상이어야 합니다.");
+        }
+
         //유저네임 중복여부 확인
         try{
             userRepository.save(requestDTO);
@@ -84,19 +88,17 @@ public class Usercontroller {
     }
 
     @PostMapping("/user/update")
-    public String update(UserRequest.passwordUpdateDTO requstDTO,HttpServletRequest request){
+    public String update(UserRequest.passwordUpdateDTO requestDTO,HttpServletRequest request){
         User sessionUser = (User) session.getAttribute("sessionUser");
         if(sessionUser==null){
             return "redirect:/loginForm";
         }
-        if(sessionUser.getPassword().equals(requstDTO.getPassword())){
-            request.setAttribute("msg","비밀번호가 동일합니다.");
-            request.setAttribute("status",400);
 
-            return "error/40x";
+        if(BCrypt.checkpw(requestDTO.getPassword(),sessionUser.getPassword())){
+            throw new RuntimeException("패스워드가 틀렸습니다.");
         }
 
-        userRepository.passwordUpdate(requstDTO,sessionUser.getId());
+        userRepository.passwordUpdate(requestDTO,sessionUser.getId());
 
 
         return "redirect:/";
