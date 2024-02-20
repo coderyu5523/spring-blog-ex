@@ -49,7 +49,7 @@ public class UserRepository {
             User user = (User) query.getSingleResult();
             return user ;
         }catch(Exception e){
-            throw new RuntimeException("데이터가 없습니다.");
+            return null ;
         }
 
 
