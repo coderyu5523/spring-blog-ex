@@ -25,20 +25,28 @@ public class UserRepository {
         Query query = em.createNativeQuery("select * from user_tb where username=? and password=?",User.class);
         query.setParameter(1,requestDTO.getUsername());
         query.setParameter(2,requestDTO.getPassword());
-        User user = (User) query.getSingleResult();
-        return user ;
+
+        try {
+            User user = (User) query.getSingleResult();
+            return user ;
+
+        } catch (Exception e) {
+            throw new RuntimeException("아이디 혹은 비밀번호를 찾을 수 없습니다.") ;
+            // 모든 스로우를 @ControllerAdvice로 던짐
+        }
     }
 
+
     public User findByUsername(String username) {
-        Query query = em.createNativeQuery("select * from user_tb where username = ?",User.class);
-        query.setParameter(1,username);
-        try{
+        Query query = em.createNativeQuery("select * from user_tb where username=?", User.class); // 알아서 매핑해줌
+        query.setParameter(1, username);
+
+        try { // 내부적으로 터지면 터지는 위치를 찾아서 내가 잡으면 됨
             User user = (User) query.getSingleResult();
             return user;
-        }catch(Exception e){
-            return null ;
+        } catch (Exception e) {
+            throw new RuntimeException("아이디를 찾을 수 없습니다");
         }
-
     }
 
     public User findByUsernameAndEmail(int id) {
@@ -49,8 +57,7 @@ public class UserRepository {
             User user = (User) query.getSingleResult();
             return user ;
         }catch(Exception e){
-            return null;
-
+            throw new RuntimeException("데이터를 찾을 수 없습니다");
         }
 
 

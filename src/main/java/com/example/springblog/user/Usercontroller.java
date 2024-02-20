@@ -2,11 +2,15 @@ package com.example.springblog.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.sql.JDBCType;
+
 @RequiredArgsConstructor
 @Controller
 public class Usercontroller {
@@ -14,36 +18,48 @@ public class Usercontroller {
     private final UserRepository userRepository ;
     private final HttpSession session;
 
-    @Transactional
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO requestDTO,HttpServletRequest request){
+    public String join(UserRequest.JoinDTO requestDTO){
 
-        User user = userRepository.findByUsername(requestDTO.getUsername());
-        if(user==null){
+        String rawPassword = requestDTO.getPassword();
+        String encPassword = BCrypt.hashpw(rawPassword,BCrypt.gensalt());
+        requestDTO.setPassword(encPassword);
+
+
+        try{
             userRepository.save(requestDTO);
-        }else{
-            request.setAttribute("msg","아이디가 중복됩니다." +
-                    "");
-            request.setAttribute("status",400);
-            return "error/40x";
+        }catch (Exception e){
+            throw new RuntimeException("아이디가 중복되었어요");
         }
-
 
         return "redirect:/loginForm";
     }
     @PostMapping("/login")
-    public String login(UserRequest.LoginDTO requestDTO,HttpServletRequest request){
+    public String login(UserRequest.LoginDTO requestDTO){
 
-       User user = userRepository.findByUsernameAndPassword(requestDTO);
-        if(user==null){
-            request.setAttribute("msg","로그인이 필요합니다");
-            request.setAttribute("status",400);
-            return "error/40x";
-        }else{
-            session.setAttribute("sessionUser",user);
-            return"redirect:/";
+
+        User user = userRepository.findByUsername(requestDTO.getUsername());
+
+        if(requestDTO.getUsername().length()<3){
+            throw new RuntimeException("유저네임이 너무 짧습니다");
         }
 
+        if(!BCrypt.checkpw(requestDTO.getPassword(),user.getPassword())){
+            // !가 있으면 역치. 패스워드 검증이 실패하면
+            throw new RuntimeException("패스워드가 틀렸습니다.");
+        }
+
+       session.setAttribute("sessionUser",user);
+
+            // ! 안쓴 긍정문일 때
+//        if(BCrypt.checkpw(requestDTO.getPassword(),user.getPassword())){
+//            session.setAttribute("sessionUser",user);
+//        }else{
+//            throw new RuntimeException("패스워드가 틀렸습니다.");
+//        }
+
+
+       return"redirect:/";
 
     }
 
@@ -60,6 +76,7 @@ public class Usercontroller {
 
     @GetMapping("/user/updateForm")
     public String updateForm(HttpServletRequest request) {
+
 
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
@@ -79,6 +96,7 @@ public class Usercontroller {
         if(sessionUser==null){
             return "redirect:/loginForm";
         }
+
         if(sessionUser.getPassword().equals(requstDTO.getPassword())){
             request.setAttribute("msg","비밀번호가 동일합니다.");
             request.setAttribute("status",400);
