@@ -14,8 +14,8 @@
         <div class="card-body">
             <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="mb-3">
-                    <input id="username" type="text" class="form-control" placeholder="Enter username" name="username">
-                    <button type="button" class="btn-warning" onclick="check()">아이디 중복체크</button>
+                    <input id="username" type="text" class="form-control" placeholder="Enter username" name="username" onkeyup="check()">
+<!--                    <button type="button" class="btn-warning" onclick="check()">아이디 중복체크</button>-->
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" placeholder="Enter password" name="password">
@@ -47,7 +47,7 @@
             console.log(res);
             if(res.body==false){
                 isSameCheck = true;
-                alert("사용가능한 아이디입니다.")
+                // alert("사용가능한 아이디입니다.")
             }else{
                 isSameCheck = false;
                 alert("아이디 중복")
