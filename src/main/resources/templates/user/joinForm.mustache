@@ -14,14 +14,14 @@
         <div class="card-body">
             <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="mb-3">
-                    <input id="username" type="text" class="form-control" placeholder="Enter username" name="username" onchange="check()">
+                    <input id="username" type="text" class="form-control" placeholder="Enter username" name="username" onchange="check()" required>
 <!--                    <button type="button" class="btn-warning" onclick="check()">아이디 중복체크</button>-->
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Enter password" name="password">
+                    <input type="password" class="form-control" placeholder="Enter password" name="password" required>
                 </div>
                 <div class="mb-3">
-                    <input type="email" class="form-control" placeholder="Enter email" name="email">
+                    <input type="email" class="form-control" placeholder="Enter email" name="email" required>
                 </div>
                 <button type="submit" class="btn btn-primary form-control">회원가입</button>
             </form>
@@ -47,10 +47,10 @@
             console.log(res);
             if(res.body==false){
                 isSameCheck = true;
-                // alert("사용가능한 아이디입니다.")
+                 alert("사용가능한 아이디입니다.")
             }else{
                 isSameCheck = false;
-                alert("아이디 중복")
+                alert("아이디가 중복되었습니다.")
             }
         }).fail((res)=>{
             alert(res.responseJSON.msg);
