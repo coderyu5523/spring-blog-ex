@@ -59,9 +59,7 @@ public class Boardcontroller {
     public String saveForm() {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        if(sessionUser==null){
-            return "redirect:/loginForm";
-        }
+
 
         return "board/saveForm";
     }

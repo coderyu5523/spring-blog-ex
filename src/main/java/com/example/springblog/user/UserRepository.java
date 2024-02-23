@@ -57,7 +57,7 @@ public class UserRepository {
             User user = (User) query.getSingleResult();
             return user ;
         }catch(Exception e){
-            throw new RuntimeException("데이터를 찾을 수 없습니다");
+            return null ;
         }
 
 
