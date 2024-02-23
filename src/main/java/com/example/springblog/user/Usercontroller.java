@@ -1,13 +1,12 @@
 package com.example.springblog.user;
 
+import com.example.springblog._core.util.ApiUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.JDBCType;
 
@@ -17,6 +16,18 @@ public class Usercontroller {
 
     private final UserRepository userRepository ;
     private final HttpSession session;
+
+    @GetMapping("/api/username-same-check")
+    public @ResponseBody ApiUtil<?> usernameSameCheck(@RequestParam String username){ //@ResponseBody 데이터 리턴을 위해
+        User user= userRepository.findByUsername(username);
+        if(user==null){
+            return new ApiUtil<>(false);
+        }else {
+            return new ApiUtil<>(true);
+        }
+
+    }
+
 
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO requestDTO){
