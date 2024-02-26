@@ -36,7 +36,7 @@ public class UserRepository {
             User user = (User) query.getSingleResult();
             return user;
         }catch(Exception e){
-            throw new RuntimeException("아이디가 존재하지 않습니다.");
+            return null;
         }
 
     }
