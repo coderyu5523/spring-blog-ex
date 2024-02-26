@@ -14,9 +14,10 @@
         <div class="card-header"><b>회원가입을 해주세요</b></div>
         <div class="card-body">
             <form action="/join" method="post" enctype="application/x-www-form-urlencoded">
+
                 <div class="mb-3">
-                    <input id="username" type="text" class="form-control" placeholder="Enter username" name="username" required>
-                    <button type="button" class="btn-warning" onclick="check()">아이디 중복체크</button>
+                    <input id="username" type="text" class="form-control" placeholder="Enter username" name="username" onchange="check()" required>
+<!--                    <button type="button" class="btn-warning" onclick="check()">아이디 중복체크</button>-->
 
                 </div>
                 <div class="mb-3">
