@@ -1,5 +1,7 @@
 package com.example.springblog.board;
 
+import com.example.springblog.love.LoveRepository;
+import com.example.springblog.love.LoveResponse;
 import com.example.springblog.reply.ReplyRepository;
 import com.example.springblog.user.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ public class Boardcontroller {
     private final BoardRepository boardRepository;
     private final HttpSession session;
     private final ReplyRepository replyRepository ;
+    private final LoveRepository loveRepository ;
 
     @GetMapping({ "/"})
     public String index(HttpServletRequest request, @RequestParam(defaultValue = "0") Integer page,@RequestParam(defaultValue = "") String keyword) {
@@ -79,6 +82,9 @@ public class Boardcontroller {
         request.setAttribute("board", boardDTO);
         request.setAttribute("replyList",replyDTOList);
 
+        LoveResponse.DetailDTO loveDetailDTO = loveRepository.findLove(id,sessionUser.getId());
+
+        request.setAttribute("love",loveDetailDTO);
 
         return "board/detail";
 

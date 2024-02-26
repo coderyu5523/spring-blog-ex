@@ -18,7 +18,7 @@ public class Usercontroller {
     private final HttpSession session;
 
     @GetMapping("/api/username-same-check")
-    public @ResponseBody ApiUtil<?> usernameSameCheck(@RequestParam String username){ //@ResponseBody 데이터 리턴을 위해
+    public @ResponseBody ApiUtil<?> usernameSameCheck(String username){ //@ResponseBody 데이터 리턴을 위해
         User user= userRepository.findByUsername(username);
         if(user==null){
             return new ApiUtil<>(false);
