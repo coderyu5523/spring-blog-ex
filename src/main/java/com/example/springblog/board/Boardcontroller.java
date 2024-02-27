@@ -68,28 +68,29 @@ public class Boardcontroller {
     }
 
     @GetMapping("/board/{id}")
-    public String detail(@PathVariable int id,HttpServletRequest request) {
-
+    public String detail(@PathVariable int id, HttpServletRequest request) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-
-        //DB데이터를 DetailDTO에 받음
         BoardResponse.DetailDTO boardDTO = boardRepository.findByIdWithUser(id);
-
         boardDTO.isBoardOwner(sessionUser);
-        //DB데이터를 ReplyDTO에 받음
-        List<BoardResponse.ReplyDTO> replyDTOList = replyRepository.findByBoardId(id,sessionUser);
 
+        List<BoardResponse.ReplyDTO> replyDTOList = replyRepository.findByBoardId(id, sessionUser);
         request.setAttribute("board", boardDTO);
-        request.setAttribute("replyList",replyDTOList);
+        request.setAttribute("replyList", replyDTOList);
 
-        LoveResponse.DetailDTO loveDetailDTO = loveRepository.findLove(id,sessionUser.getId());
+        if(sessionUser == null){
+            LoveResponse.DetailDTO loveDetailDTO = loveRepository.findLove(id);
+            request.setAttribute("love", loveDetailDTO);
+        }else{
+            LoveResponse.DetailDTO loveDetailDTO = loveRepository.findLove(id, sessionUser.getId());
+            request.setAttribute("love", loveDetailDTO);
+        }
 
-        request.setAttribute("love",loveDetailDTO);
+        // fas fa-heart text-danger
+        // far fa-heart
+        // request.setAttribute("css", "far fa-heart");
 
         return "board/detail";
-
     }
-
 
     @PostMapping("/board/save")
     private String saveWrite(BoardRequest.saveDTO requestDTO){
