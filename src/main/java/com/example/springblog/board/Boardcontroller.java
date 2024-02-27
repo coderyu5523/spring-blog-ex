@@ -92,6 +92,7 @@ public class Boardcontroller {
         return "board/detail";
     }
 
+
     @PostMapping("/board/save")
     private String saveWrite(BoardRequest.saveDTO requestDTO){
         User sessionUser = (User) session.getAttribute("sessionUser");

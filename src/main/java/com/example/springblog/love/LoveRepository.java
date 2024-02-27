@@ -1,21 +1,34 @@
 package com.example.springblog.love;
 
-import com.example.springblog.board.Board;
-import com.example.springblog.board.BoardRequest;
-import com.example.springblog.board.BoardResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Repository
 public class LoveRepository {
+    private final EntityManager em;
 
-    private final EntityManager em ;
+    public Love findById(int id) {
+        Query query = em.createNativeQuery("select * from love_tb where id = ?", Love.class);
+        query.setParameter(1, id);
+
+        Love love = (Love) query.getSingleResult();
+        return love;
+    }
+
+    @Transactional
+    public void deleteById(int id) {
+        Query query = em.createNativeQuery("delete from love_tb where id = ?");
+        query.setParameter(1, id);
+
+        query.executeUpdate();
+    }
+
+
+
 
     public LoveResponse.DetailDTO findLove(int boardId) {
         String q = """
@@ -72,7 +85,6 @@ public class LoveRepository {
             id = 0;
             isLove = false;
             loveCount = 0L;
-            //댓글이 없으면 0으로 초기화
         }
 
 
@@ -87,24 +99,15 @@ public class LoveRepository {
     }
 
     @Transactional
-    public void save(BoardRequest.saveDTO requestDTO, int id) {
-        Query query =em.createNativeQuery("insert into board_tb(title,content,user_id,created_at) values (?,?,?,now())");
-        query.setParameter(1,requestDTO.getTitle());
-        query.setParameter(2,requestDTO.getContent());
-        query.setParameter(3,id);
+    public Love save(LoveRequest.SaveDTO requestDTO, int sessionUserId) {
+        Query query = em.createNativeQuery("insert into love_tb(board_id, user_id, created_at) values(?,?, now())");
+        query.setParameter(1, requestDTO.getBoardId());
+        query.setParameter(2, sessionUserId);
+
         query.executeUpdate();
+        // 인서트한 row 를 조회해서 다시 리턴
+        Query q = em.createNativeQuery(" select * from love_tb where id = (select max(id) from love_tb)",Love.class);
+        Love love = (Love) q.getSingleResult();
+        return love;
     }
-
-    @Transactional
-    public void deleteById(int id) {
-        Query query = em.createNativeQuery("delete from board_tb where id =?");
-        query.setParameter(1,id);
-        query.executeUpdate();
-    }
-
-
-
-
-
-
 }
